@@ -1,0 +1,33 @@
+<launch>
+  <master auto="start"/>
+  <param name="/use_sim_time" value="true"/>
+
+  <!-- start gazebo -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find tao_robot_pruebas)/worlds/unexmin.world" />
+  </include>
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find unexmin_description)/urdf/unexmin.urdf'" />
+
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+      args="-x 0 -y -2 -z 11.5 -R 0 -P 0 -Y 1.5 -urdf -model unexmin -param robot_description"/>
+
+  <node name="surface" pkg="freefloating_gazebo" type="surface.py"
+         args="-x 100 -y 100 -g 0.2 -b 1 -a 0.2"/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+      respawn="false" output="screen">
+        <remap from="/joint_states" to="/unexmin/joint_states"/>
+  </node>
+
+  <rosparam command="load"
+          file="$(find tao_robot_pruebas)/config/control.yaml"/>
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+      output="screen" ns="/unexmin" args="joint_state_controller
+          		                            spinning_position_controller
+          		                            sphere_position_controller"/>
+
+  <node name="prueba" pkg="tao_robot_pruebas" type="nodo_prueba" output="screen" />
+
+</launch>
