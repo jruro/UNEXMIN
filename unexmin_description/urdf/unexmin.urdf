@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--<xacro:property name="camera_link" value="0.05" />  Size of square 'camera' box -->
+
+<robot name="unexmin_description"
+
+  xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+  xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+  xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+  xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
+
+  <origin xyz="0 0 5.3" rpy="0 0 0" />
+
+  <material name="grey">
+    <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+
+  <material name="orange">
+    <color rgba="${255/255} ${108/255} ${10/255} 1.0"/>
+  </material>
+
+<link name="body">
+
+    <velocity_decay>
+      <angular>0.001</angular>
+      <linear>0.003</linear>
+    </velocity_decay>
+
+    <inertial>
+      <origin xyz="0 0 -0.001" rpy="0 0 0" />
+      <mass value="95.0" />
+      <inertia ixx="3.7814" ixy="0.0" ixz="0.0" iyy="3.7814" iyz="0.0" izz="3.7814" />
+    </inertial>
+
+    <collision name="collision">
+      <geometry>
+        <sphere radius="0.3"/>
+      </geometry>
+    </collision>
+
+    <visual name="visual">
+      <geometry>
+        <sphere radius="0.3"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+
+    <gazebo reference="body">
+      <material>Gazebo/Pedestrian</material>
+    </gazebo>
+
+     <!--camera -->
+    <gazebo reference="camera_link">
+
+      <sensor type="camera" name="camera_UNEXMIN">
+        <origin xyz="0.3 0 0.1" rpy="0 0 0" />
+        <update_rate>30.0</update_rate>
+        <camera name="head">
+          <horizontal_fov>1.3962634</horizontal_fov>
+          <image>
+            <width>800</width>
+            <height>800</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>300</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+             <!--Noise is sampled independently per pixel on each frame.
+                 That pixel's noise value is added to each of its color
+                 channels, which at that point lie in the range [0,1].-->
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+
+        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+          <alwaysOn>true</alwaysOn>
+          <updateRate>0.0</updateRate>
+          <cameraName>UNEXMIN/camera</cameraName>
+          <imageTopicName>image_raw</imageTopicName>
+          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+          <frameName>camera_link</frameName>
+          <hackBaseline>0.07</hackBaseline>
+          <distortionK1>0.0</distortionK1>
+          <distortionK2>0.0</distortionK2>
+          <distortionK3>0.0</distortionK3>
+          <distortionT1>0.0</distortionT1>
+          <distortionT2>0.0</distortionT2>
+        </plugin>
+      </sensor>
+  </gazebo>
+</link>
+
+<link name="mass">
+  <origin xyz="0 0 0.1" rpy="0 0 0" />
+
+  <inertial>
+    <mass value="10" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <inertia ixx="0.00066" ixy="0.0" ixz="0.0" iyy="0.00066" iyz="0.0" izz="0.00066" />
+  </inertial>
+
+  <collision name="collision">
+    <geometry>
+      <sphere radius="0.01"/>
+    </geometry>
+  </collision>
+
+  <visual name="visual">
+    <geometry>
+      <sphere radius="0.01"/>
+    </geometry>
+    <material name="grey"/>
+  </visual>
+
+  <gazebo reference="mass">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+
+</link>
+
+<gazebo>
+
+  <link name="link">
+    <pose>0.32 0 0.1 0 0 0</pose>
+    <inertial>
+      <mass>1.0</mass>
+      <inertia> <!-- interias are tricky to compute -->
+        <!-- http://answers.gazebosim.org/question/4372/the-inertia-matrix-explained/ -->
+        <ixx>0.000415</ixx>       <!-- for a box: ixx = 0.083 * mass * (y*y + z*z) -->
+        <ixy>0.0</ixy>         <!-- for a box: ixy = 0 -->
+        <ixz>0.0</ixz>         <!-- for a box: ixz = 0 -->
+        <iyy>0.000415</iyy>       <!-- for a box: iyy = 0.083 * mass * (x*x + z*z) -->
+        <iyz>0.0</iyz>         <!-- for a box: iyz = 0 -->
+        <izz>0.000415</izz>       <!-- for a box: izz = 0.083 * mass * (x*x + y*y) -->
+      </inertia>
+    </inertial>
+
+    <collision name="collision-base">
+      <pose>0 0 -0.0145 0 0 0</pose>
+      <geometry>
+        <box>
+          <size>0.05 0.05 0.041</size>
+        </box>
+      </geometry>
+    </collision>
+    <collision name="collision-top">
+      <pose>0 0 0.0205 0 0 0</pose>
+      <geometry>
+        <cylinder>
+          <radius>0.021</radius>
+          <length>0.029</length>
+        </cylinder>
+      </geometry>
+    </collision>
+    <sensor name="laser" type="ray">
+      <pose>0 0 0 0 0 0</pose>
+     <ray>
+        <scan>
+          <horizontal>
+            <samples>200</samples>
+            <resolution>1</resolution>
+            <min_angle>-0.5</min_angle>
+            <max_angle>0.5</max_angle>
+          </horizontal>
+          <vertical>
+            <samples>200</samples>
+            <resolution>1.0</resolution>
+            <min_angle>-0.7</min_angle>
+            <max_angle>0.7</max_angle>
+          </vertical>
+        </scan>
+        <range>
+          <min>0.08</min>
+          <max>3.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+      <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_block_laser.so">
+        <topicName>/UNEXMIN/laser/scan</topicName>
+        <frameName>base_link</frameName>
+                  <gaussianNoise>0.00</gaussianNoise>
+            <updateRate>40</updateRate>
+      </plugin>
+
+      <always_on>1</always_on>
+      <update_rate>40</update_rate>
+      <visualize>true</visualize>
+    </sensor>
+  </link>
+
+  <joint name="hokuyo_joint" type="fixed">
+    <pose>0 0 0 0 0 0</pose>
+    <child>link</child>
+    <parent>body</parent>
+    <axis>
+      <xyz>0 1 0</xyz>
+      <limit>
+        <lower>-0.77</lower>
+        <upper>0.77</upper>
+      </limit>
+    </axis>
+  </joint>
+
+  </gazebo>
+
+    <link name="propeller">
+          <origin xyz="-0.32 0 0" rpy="0 0 0" />
+          <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.998" />
+            <inertia ixx="0.000415" ixy="0.0" ixz="0.0" iyy="0.000415" iyz="0.0" izz="0.000415" />
+          </inertial>
+
+          <collision name="collision">
+            <geometry>
+              <box size="0.05 0.05 0.05"/>
+            </geometry>
+          </collision>
+
+          <gazebo reference="propeller">
+            <material>Gazebo/Yellow</material>
+          </gazebo>
+
+          <visual name="blade1_visual">
+            <origin xyz="0 -0.018 0" rpy="0 0.7853981633974483 0" />
+            <geometry>
+              <box size="0.024 0.024 0.006"/>
+            </geometry>
+            <material name="orange"/>
+          </visual>
+
+	         <collision name="blade1_collision">
+             <origin xyz="0 -0.018 0" rpy="0 0.7853981633974483 0" />
+             <geometry>
+               <box size="0.024 0.024 0.006"/>
+             </geometry>
+           </collision>
+
+           <visual name="blade2_visual">
+              <origin xyz="0 0.018 0" rpy="0 -0.7853981633974483 0" />
+              <geometry>
+                <box size="0.024 0.024 0.006"/>
+              </geometry>
+              <material name="orange"/>
+            </visual>
+
+            <collision name="blade2_collision">
+              <origin xyz="0 0.018 0" rpy="0 -0.7853981633974483 0" />
+              <geometry>
+                <box size="0.024 0.024 0.006"/>
+              </geometry>
+            </collision>
+
+            <visual name="blade3_visual">
+              <origin xyz="0 0 -0.018" rpy="1.5707963267948966 0 0.7853981633974483" />
+              <geometry>
+                <box size="0.024 0.024 0.006"/>
+              </geometry>
+              <material name="orange"/>
+            </visual>
+
+            <collision name="blade3_collision">
+              <origin xyz="0 0 -0.018" rpy="1.5707963267948966 0 0.7853981633974483" />
+              <geometry>
+                <box size="0.024 0.024 0.006"/>
+              </geometry>
+            </collision>
+
+            <visual name="blade4_visual">
+              <origin xyz="0 0 0.018" rpy="1.5707963267948966 0 -0.7853981633974483" />
+              <geometry>
+                <box size="0.024 0.024 0.006"/>
+              </geometry>
+              <material name="orange"/>
+            </visual>
+
+            <collision name="blade4_collision">
+              <origin xyz="0 0 0.018" rpy="1.5707963267948966 0 -0.7853981633974483" />
+              <geometry>
+                <box size="0.024 0.024 0.006"/>
+              </geometry>
+            </collision>
+  </link>
+
+        <joint name="sphere_joint" type="revolute">
+          <origin xyz="0 0 0.1" rpy="0 0 0" />
+          <child link="body"/>
+          <parent link ="mass"/>
+          <axis xyz="0 1 0"/>
+          <limit effort = "1000000000" velocity = "100000000" />
+          <dynamics damping="1.0"/>
+        </joint>
+
+        <joint name="spinning_joint" type="revolute">
+          <origin xyz="-0.32 0 0" rpy="0 0 0" />
+          <child link="propeller"/>
+          <parent link="body"/>
+          <axis xyz="-1 0 0"/>
+          <use_parent_model_frame>1</use_parent_model_frame>
+          <limit effort="-1" lower="-1e+12" upper="1e+12" velocity="1e+12"/>
+          <dynamics damping="0.6"/>
+        </joint>
+
+        <transmission name="tran1">
+          <type>transmission_interface/SimpleTransmission</type>
+          <joint name="sphere_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </joint>
+          <actuator name="motor1">
+            <mechanicalReduction>1</mechanicalReduction>
+          </actuator>
+        </transmission>
+
+        <transmission name="tran2">
+          <type>transmission_interface/SimpleTransmission</type>
+          <joint name="spinning_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </joint>
+          <actuator name="motor2">
+            <mechanicalReduction>1</mechanicalReduction>
+          </actuator>
+        </transmission>
+
+        <allow_auto_disable>1</allow_auto_disable>
+
+        <gazebo>
+
+          <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/unexmin</robotNamespace>
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+            <legacyModeNS>true</legacyModeNS>
+            <!--<robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>-->
+          </plugin>
+
+          <plugin name="BuoyancyPlugin" filename="libBuoyancyPlugin.so">
+             a viscous liquid
+            <fluid_density>943.6864375</fluid_density>
+            <link name="body">
+              <volume>2916</volume>
+            </link>
+          </plugin>
+
+          <plugin name="submarine_propeller_1" filename="libLiftDragPlugin.so">
+            <air_density>943.70975</air_density>
+            <cla>1.2535816618911175</cla>
+            <cla_stall>-1.4326647564469914</cla_stall>
+            <cda>0</cda>
+            <cda_stall>1.4326647564469914</cda_stall>
+            <alpha_stall>1.396</alpha_stall>
+            <a0>0</a0>
+            <area>0.000576</area>
+            <upward>-0.7071067811865476 0 0.7071067811865475</upward>
+            <forward>0.7071067811865475 0 0.7071067811865476</forward>
+            <link_name>propeller</link_name>
+            <cp>0 -0.018 0</cp>
+          </plugin>
+
+          <plugin name="submarine_propeller_2" filename="libLiftDragPlugin.so">
+            <air_density>943.70975</air_density>
+            <cla>1.2535816618911175</cla>
+            <cla_stall>-1.4326647564469914</cla_stall>
+            <cda>0</cda>
+            <cda_stall>1.4326647564469914</cda_stall>
+            <alpha_stall>1.396</alpha_stall>
+            <a0>0</a0>
+            <area>0.000576</area>
+            <upward>0.7071067811865475 0 0.7071067811865476</upward>
+            <forward>0.7071067811865476 0 -0.7071067811865475</forward>
+            <link_name>propeller</link_name>
+            <cp>0 0.018 0</cp>
+          </plugin>
+
+          <plugin name="submarine_propeller_3" filename="libLiftDragPlugin.so">
+            <air_density>943.70975</air_density>
+            <cla>1.2535816618911175</cla>
+            <cla_stall>-1.4326647564469914</cla_stall>
+            <cda>0</cda>
+            <cda_stall>1.4326647564469914</cda_stall>
+            <alpha_stall>1.396</alpha_stall>
+            <a0>0</a0>
+            <area>0.000576</area>
+            <upward>-0.7071067811865475 -0.7071067811865475 0</upward>
+            <forward>0.7071067811865475 -0.7071067811865476 0</forward>
+            <link_name>propeller</link_name>
+            <cp>0 0 -0.018</cp>
+          </plugin>
+
+          <plugin name="submarine_propeller_4" filename="libLiftDragPlugin.so">
+            <air_density>943.70975</air_density>
+            <cla>1.2535816618911175</cla>
+            <cla_stall>-1.4326647564469914</cla_stall>
+            <cda>0</cda>
+            <cda_stall>1.4326647564469914</cda_stall>
+            <alpha_stall>1.396</alpha_stall>
+            <a0>0</a0>
+            <area>0.000576</area>
+            <upward>-0.7071067811865476 0.7071067811865475 0</upward>
+            <forward>0.7071067811865475 0.7071067811865475 0</forward>
+            <link_name>propeller</link_name>
+            <cp>0 0 0.018</cp>
+         </plugin>
+      </gazebo>
+</robot>

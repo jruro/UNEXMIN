@@ -1,0 +1,23 @@
+<launch>
+
+  <arg name="robot_namespace" default="/"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <!--<arg name="world_name" value="$(find dm_teamwork_examples)/worlds/low_physics.world" />-->
+  </include>
+
+  <!--param name="robot_description" command="$(find xacro)/xacro.py $(find unexmin_description)/urdf/unexmin.urdf" />-->
+
+  <param name="robot_description" command="$(find xacro)/xacro '$(find  unexmin_description)/urdf/unexmin.urdf'
+  --inorder
+  robot_namespace:=$(arg robot_namespace)
+    " />
+
+  <node name="spawn_unexmin" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model unexmin" respawn="false" output="screen" />
+
+  <!--  <param name="robot_description" command="$(find xacro)/xacro.py '$(find unexmin_description)/urdf/unexmin.urdf'
+      " />-->
+
+  <!-- ros_control rrbot launch file -->
+
+</launch>
