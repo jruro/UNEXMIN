@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(tao_robot_pruebas)
+project(tao_monitor)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -8,6 +8,8 @@ project(tao_robot_pruebas)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  decision_making
+  decision_making_parser
   geometry_msgs
   random_numbers
   roscpp
@@ -15,12 +17,10 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   message_generation
-  gazebo_msgs
 )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-find_package(gazebo REQUIRED)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -53,11 +53,13 @@ find_package(gazebo REQUIRED)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
+
  add_message_files(
    FILES
-   prueba.msg
+   Num1.msg
 #   Message2.msg
  )
+
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -74,10 +76,12 @@ find_package(gazebo REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
+
  generate_messages(
    DEPENDENCIES
    std_msgs
  )
+
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -110,8 +114,8 @@ find_package(gazebo REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES tao_robot_1
-  CATKIN_DEPENDS gazebo_ros geometry_msgs random_numbers roscpp rospy sensor_msgs std_msgs message_runtime gazebo_msgs
+#  LIBRARIES tao_monitor
+  CATKIN_DEPENDS decision_making decision_making_parser geometry_msgs random_numbers roscpp rospy sensor_msgs std_msgs message_runtime
 #  DEPENDS system_lib
 )
 
@@ -128,7 +132,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/tao_robot_1.cpp
+#   src/${PROJECT_NAME}/tao_monitor.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -137,8 +141,12 @@ include_directories(
 # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
+## With catkin_make all packages are built within a single CMake context
+## The recommended prefix ensures that target names across packages don't collide
+# add_executable(${PROJECT_NAME}_node src/tao_monitor_node.cpp)
 
-add_executable(nodo_prueba src/prueba.cpp)
+add_executable(monitor_node src/monitor.cpp)
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -155,7 +163,11 @@ add_executable(nodo_prueba src/prueba.cpp)
 #   ${catkin_LIBRARIES}
 # )
 
-target_link_libraries(nodo_prueba ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+target_link_libraries(monitor_node ${catkin_LIBRARIES})
+
+decision_making_parsing(
+	src/monitor.cpp	
+)
 
 #############
 ## Install ##
@@ -197,7 +209,7 @@ target_link_libraries(nodo_prueba ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_tao_robot_1.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_tao_monitor.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

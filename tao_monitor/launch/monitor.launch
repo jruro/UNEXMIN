@@ -1,0 +1,27 @@
+<launch>
+  <master auto="start"/>
+  <param name="/use_sim_time" value="true"/>
+
+  <!-- start gazebo -->
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find tao_monitor)/worlds/unexmin.world" />
+    </include>
+
+  <!-- include our robots -->
+
+  <node name="monitor" pkg="tao_monitor" type="monitor_node" output="screen" />
+
+  <group ns="unexmin1">
+
+  <include file="$(find tao_robot_1)/launch/wandering.launch"/>
+
+  </group>
+
+  <group ns="unexmin2">
+
+  <include file="$(find tao_robot_2)/launch/wandering.launch"/>
+
+  </group>
+
+</launch>

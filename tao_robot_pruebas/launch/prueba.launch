@@ -12,12 +12,17 @@
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
       args="-x 0 -y -2 -z 11.5 -R 0 -P 0 -Y 1.5 -urdf -model unexmin -param robot_description"/>
 
+  <!--<param name="UNEXMIN1" command="$(find xacro)/xacro /home/juan/.gazebo/models/UNEXMIN/UNEXMIN.sdf"/>
+
+  <node name="spawn_sdf" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-sdf -model unexmin -param UNEXMIN1 -x 0 -y -2 -z 11.5 -R 0 -P 0 -Y 1.5"/>-->
+
+
   <node name="surface" pkg="freefloating_gazebo" type="surface.py"
          args="-x 100 -y 100 -g 0.2 -b 1 -a 0.2"/>
 
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
-      respawn="false" output="screen">
-        <remap from="/joint_states" to="/unexmin/joint_states"/>
+  <node name="state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen">
+    <param name="publish_frequency" type="double" value="50.0" />
+    <remap from="/joint_states" to="/unexmin/joint_states"  />
   </node>
 
   <rosparam command="load"
@@ -25,9 +30,9 @@
 
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
       output="screen" ns="/unexmin" args="joint_state_controller
-          		                            spinning_position_controller
-          		                            sphere_position_controller"/>
+          		                            spinning_joint_position_controller
+          		                            sphere_joint_position_controller"/>
 
-  <node name="prueba" pkg="tao_robot_pruebas" type="nodo_prueba" output="screen" />
+  <!--<node name="prueba" pkg="tao_robot_pruebas" type="nodo_prueba" output="screen" />-->
 
 </launch>

@@ -13,7 +13,83 @@
     </include>
     <!--<include>
       <uri>model://UNEXMIN</uri>
+      <name>unexmin1</name>
       <pose>0 -2 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin2</name>
+      <pose>0 -4 11.5 0 0 1.5</pose>
+    </include>-->
+    <!--<include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin3</name>
+      <pose>0 -6 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin4</name>
+      <pose>0 -8 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin5</name>
+      <pose>0 -10 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin6</name>
+      <pose>0 -12 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin7</name>
+      <pose>0 -14 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin8</name>
+      <pose>0 -16 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin9</name>
+      <pose>0 -18 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin10</name>
+      <pose>0 -20 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin11</name>
+      <pose>0 -22 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin12</name>
+      <pose>0 -24 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin13</name>
+      <pose>0 -26 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin14</name>
+      <pose>0 -28 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin15</name>
+      <pose>0 -30 11.5 0 0 1.5</pose>
+    </include>
+    <include>
+      <uri>model://UNEXMIN</uri>
+      <name>unexmin16</name>
+      <pose>0 -32 11.5 0 0 1.5</pose>
     </include>-->
 
     <!-- buoyancy plugin -->
