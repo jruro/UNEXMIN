@@ -312,7 +312,7 @@
         <transmission name="tran1">
           <type>transmission_interface/SimpleTransmission</type>
           <joint name="sphere_joint">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <hardwareInterface>EffortJointInterface</hardwareInterface>
           </joint>
           <actuator name="motor1">
             <mechanicalReduction>1</mechanicalReduction>
@@ -322,7 +322,7 @@
         <transmission name="tran2">
           <type>transmission_interface/SimpleTransmission</type>
           <joint name="spinning_joint">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <hardwareInterface>EffortJointInterface</hardwareInterface>
           </joint>
           <actuator name="motor2">
             <mechanicalReduction>1</mechanicalReduction>
@@ -337,7 +337,6 @@
             <robotNamespace>/unexmin</robotNamespace>
             <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
             <legacyModeNS>true</legacyModeNS>
-            <!--<robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>-->
           </plugin>
 
           <plugin name="BuoyancyPlugin" filename="libBuoyancyPlugin.so">
