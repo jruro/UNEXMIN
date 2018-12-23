@@ -1,0 +1,240 @@
+<?xml version='1.0'?>
+<sdf version="1.5">
+
+<model name="UNEXMIN">
+
+  <pose>0 0 5.3 0 0 0</pose>
+
+	<link name="body">
+
+    <velocity_decay>
+	    <angular>0.001</angular>
+	    <linear>0.003</linear>
+	  </velocity_decay>
+
+    <inertial>
+      <mass>95</mass>
+      <pose>0 0 -0.001 0 0 0</pose>
+      <inertia> <!-- interias are tricky to compute -->
+        <!-- http://answers.gazebosim.org/question/4372/the-inertia-matrix-explained/ -->
+        <ixx>3.7814</ixx>       <!-- for a box: ixx = 0.083 * mass * (y*y + z*z) -->
+        <ixy>0.0</ixy>         <!-- for a box: ixy = 0 -->
+        <ixz>0.0</ixz>         <!-- for a box: ixz = 0 -->
+        <iyy>3.7814</iyy>       <!-- for a box: iyy = 0.083 * mass * (x*x + z*z) -->
+        <iyz>0.0</iyz>         <!-- for a box: iyz = 0 -->
+        <izz>3.7814</izz>       <!-- for a box: izz = 0.083 * mass * (x*x + y*y) -->
+      </inertia>
+    </inertial>
+
+    <collision name="collision">
+      <geometry>
+        <sphere>
+          <radius>0.3</radius>
+        </sphere>
+      </geometry>
+    </collision>
+
+    <visual name="visual">
+      <geometry>
+        <sphere>
+          <radius>0.3</radius>
+        </sphere>
+      </geometry>
+      <material>
+        <script>
+          <uri>file://media/materials/scripts/gazebo.material</uri>
+          <name>Gazebo/Pedestrian</name>
+        </script>
+      </material>
+    </visual>
+
+    <sensor type="camera" name="camera_UNEXMIN">
+	    <pose>0.3 0 0.1 0 0 0</pose>
+      <update_rate>30.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+           <!--Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1].-->
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>UNEXMIN/camera</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_link</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+
+  </link>
+
+  <link name="mass">
+    <pose>0 0 -0.1 0 0 0</pose> <!-- <pose>0.000258819 0.1 -0.000965 0 0 0</pose> -->
+
+    <inertial>
+      <mass>10</mass>
+      <pose>0 0 0 0 0 0</pose>
+      <inertia> <!-- interias are tricky to compute -->
+        <!-- http://answers.gazebosim.org/question/4372/the-inertia-matrix-explained/ -->
+        <ixx>0.00066</ixx>       <!-- for a box: ixx = 0.083 * mass * (y*y + z*z) -->
+        <ixy>0.0</ixy>         <!-- for a box: ixy = 0 -->
+        <ixz>0.0</ixz>         <!-- for a box: ixz = 0 -->
+        <iyy>0.00066</iyy>       <!-- for a box: iyy = 0.083 * mass * (x*x + z*z) -->
+        <iyz>0.0</iyz>         <!-- for a box: iyz = 0 -->
+        <izz>0.00066</izz>       <!-- for a box: izz = 0.083 * mass * (x*x + y*y) -->
+      </inertia>
+    </inertial>
+
+    <collision name="collision">
+      <geometry>
+        <sphere>
+          <radius>0.01</radius>
+        </sphere>
+      </geometry>
+    </collision>
+
+    <visual name="visual">
+      <geometry>
+        <sphere>
+          <radius>0.01</radius>
+        </sphere>
+      </geometry>
+	    <material>
+        <script>
+          <uri>file://media/materials/scripts/gazebo.material</uri>
+          <name>Gazebo/Yellow</name>
+        </script>
+      </material>
+    </visual>
+  </link>
+
+    <joint name="sphere_joint" type="revolute">
+      <pose>0 0 0.1 0 0 0</pose>
+      <child>mass</child>
+      <parent>body</parent>
+      <axis>
+        <xyz>0 1 0</xyz>
+
+      	<dynamics>
+		      <damping>1</damping>
+      	</dynamics>
+
+      </axis>
+    </joint>
+
+<include>
+      <uri>model://hokuyo_UNEXMIN</uri>
+      <pose>0.32 0 0 0 0 0</pose>
+    </include>
+
+    <joint name="hokuyo_joint" type="fixed">
+	<pose>0 0 0 0 0 0</pose>
+      <child>hokuyo_UNEXMIN::link</child>
+      <parent>body</parent>
+      <axis>
+        <xyz>0 1 0</xyz>
+
+        <limit>
+
+          <lower>-0.77</lower>
+          <upper>0.77</upper>
+
+        </limit>
+
+      </axis>
+    </joint>
+
+    <include>
+      <uri>model://propeller_center_UNEXMIN</uri>
+      <pose>-0.32 0 0 0 0 0</pose>
+
+    </include>
+
+    <!--<include>
+      <uri>model://mines</uri>
+      <pose>2.0 1.0 -6.5 0 0 1.5707</pose>
+
+    </include>-->
+
+<joint name='spinning_joint' type='revolute'>
+      <parent>body</parent>
+      <child>propeller_center_UNEXMIN::propeller</child>
+      <axis>
+        <xyz>-1 0 0</xyz>
+        <use_parent_model_frame>1</use_parent_model_frame>
+        <limit>
+          <lower>-1e+12</lower>
+          <upper>1e+12</upper>
+          <effort>-1</effort>
+          <velocity>-1</velocity>
+        </limit>
+	      <dynamics>
+		      <damping>0.6</damping>
+      	</dynamics>
+      </axis>
+
+    </joint>
+
+<!--
+
+<include>
+      <uri>model://propeller_right_UNEXMIN</uri>
+      <pose>-0.32 -0.15 0 0 0 0</pose>
+
+    </include>
+
+<joint name='spinning_joint_2' type='revolute'>
+      <parent>body</parent>
+      <child>propeller_right_UNEXMIN::propeller</child>
+      <axis>
+        <xyz>-1 0 0</xyz>
+        <use_parent_model_frame>1</use_parent_model_frame>
+        <limit>
+          <lower>-1e+12</lower>
+          <upper>1e+12</upper>
+          <effort>-1</effort>
+          <velocity>-1</velocity>
+        </limit>
+	      <dynamics>
+		      <damping>0.6</damping>
+      	</dynamics>
+      </axis>
+
+    </joint>
+
+-->
+
+<allow_auto_disable>1</allow_auto_disable>
+
+<plugin name="BuoyancyPlugin" filename="libBuoyancyPlugin.so">
+    <!-- a viscous liquid -->
+    <fluid_density>943.6864375</fluid_density>
+    <link name="body">
+      <volume>2916</volume>
+    </link>
+  </plugin>
+
+</model>
+
+</sdf>
